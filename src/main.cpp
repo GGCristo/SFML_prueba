@@ -1,10 +1,14 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <cmath>
+
+void jumping (sf::RectangleShape&, const unsigned int&, sf::RenderWindow&, sf::RectangleShape&);
 
 int main()
 {
   const unsigned int anchura = 500;
   const unsigned int altura = 500;
-  sf::RenderWindow window (sf::VideoMode(anchura, altura), "A ver si me sale la hitbox");
+  sf::RenderWindow window (sf::VideoMode(anchura, altura), "A ver si me sale el salto");
   window.setFramerateLimit(30);
 
   sf::RectangleShape suelo(sf::Vector2f(anchura, altura/3));
@@ -27,7 +31,7 @@ int main()
 
   if (sf::Keyboard::isKeyPressed (sf::Keyboard::Left) && entidad.getPosition().x >= 10)  entidad.move(-10, 0);
   else if (sf::Keyboard::isKeyPressed (sf::Keyboard::Right) && entidad.getPosition().x <= anchura - 100 - 10) entidad.move(10, 0);
-  // if (sf::Keyboard::isKeyPressed (sf::Keyboard::Up) && entidad.getPosition().y == altura - suelo.getSize().y - 50) entidad.move(0, -80);
+  if (sf::Keyboard::isKeyPressed (sf::Keyboard::Up) && entidad.getPosition().y == altura - suelo.getSize().y - 50) jumping(entidad, suelo.getSize().y, window, suelo);
 
   window.clear();
   window.draw(entidad);
@@ -38,3 +42,28 @@ int main()
 
   return 0;
 }
+
+  void jumping (sf::RectangleShape& entidad, const unsigned int& sz_suelo, sf::RenderWindow& window, sf::RectangleShape& suelo)
+  {
+    unsigned int aceleracion = 0;
+    while(entidad.getPosition().y >= 500 - (sz_suelo + 150))
+    {
+      entidad.move(0, - (++aceleracion - 1/2 * 9.807));
+      std::cout << "Subiendo" << "\n";
+
+      window.clear();
+      window.draw(entidad);
+      window.draw(suelo);
+      window.display();
+    }
+
+    while (entidad.getPosition().y < 500 - (sz_suelo + entidad.getSize().y))
+    {
+      entidad.move(0, + (++aceleracion - 1/2 * 9.807));
+      std::cout << "Bajando" << "\n";
+      window.clear();
+      window.draw(entidad);
+      window.draw(suelo);
+      window.display();
+    }
+  }
