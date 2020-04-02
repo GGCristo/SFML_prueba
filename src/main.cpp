@@ -46,10 +46,23 @@ int main()
   void jumping (sf::RectangleShape& entidad, const unsigned int& sz_suelo, sf::RenderWindow& window, sf::RectangleShape& suelo)
   {
     unsigned int aceleracion = 0;
+    int x = 0;
     while(entidad.getPosition().y >= 500 - (sz_suelo + 150))
     {
-      entidad.move(0, - (++aceleracion - 1/2 * 9.807));
+
+      if (sf::Keyboard::isKeyPressed (sf::Keyboard::Left) && entidad.getPosition().x >= 10)
+      {
+        x -= 1;
+      }
+
+      else if (sf::Keyboard::isKeyPressed (sf::Keyboard::Right) && entidad.getPosition().x <= window.getSize().y - 100 - 10)  
+      {
+        x += 1;
+      }
+
+      entidad.move(x, - (++aceleracion - 1/2 * 9.807));
       std::cout << "Subiendo" << "\n";
+      std::cout << "Estoy en: " << entidad.getPosition().x << " " << entidad.getPosition().y << "\n";
 
       window.clear();
       window.draw(entidad);
@@ -59,8 +72,19 @@ int main()
 
     while (entidad.getPosition().y < 500 - (sz_suelo + entidad.getSize().y))
     {
-      entidad.move(0, + (++aceleracion - 1/2 * 9.807));
+      entidad.move(x, + (++aceleracion - 1/2 * 9.807));
       std::cout << "Bajando" << "\n";
+
+      if (sf::Keyboard::isKeyPressed (sf::Keyboard::Left) && entidad.getPosition().x >= 10)
+      {
+        x -= 1;
+      }
+
+      else if (sf::Keyboard::isKeyPressed (sf::Keyboard::Right) && entidad.getPosition().x <= window.getSize().y - 100 - 10)  
+      {
+        x += 1;
+      }
+
       window.clear();
       window.draw(entidad);
       window.draw(suelo);
